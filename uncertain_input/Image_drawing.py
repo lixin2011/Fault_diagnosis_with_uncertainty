@@ -5,32 +5,38 @@ import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.collections import PolyCollection
 import seaborn as sns
+
 os.chdir(r'D:\temp')
-df = pd.read_excel(r'22-t.xlsx')
+df = pd.read_excel(r'flow.xlsx')
 
-def plot_bar():
-    x = df.columns[1:]
-    acc_0_0 = df.iloc[0,1:].values
-    acc_0_2 = df.iloc[1,1:].values
-    acc_0_4 = df.iloc[2,1:].values
-    acc_0_6 = df.iloc[3,1:].values
-    acc_0_8 = df.iloc[4,1:].values
-    acc_1_0 = df.iloc[5,1:].values
-    print(acc_0_2)
-    plt.figure(figsize=(8,8))
-    color = ['#d0d1e6','#a6bddb','#67a9cf','#3690c0','#02818a','#016450']
-    plt.bar(x,acc_0_0,color=color[0],width=0.5,zorder=1,align='center',edgecolor='k')
-    plt.bar(x,acc_0_2,color=color[1],width=0.5,zorder=1,align='center',edgecolor='k')
-    plt.bar(x,acc_0_4,color=color[2],width=0.5,zorder=2,align='center',edgecolor='k')
-    plt.bar(x,acc_0_6,color=color[3],width=0.5,zorder=2,align='center',edgecolor='k')
-    plt.bar(x,acc_0_8,color=color[4],width=0.5,zorder=2,align='center',edgecolor='k')
-    plt.bar(x,acc_1_0,color=color[5],width=0.5,zorder=2,align='center',edgecolor='k')
-    plt.ylim(0.85,1)
-    plt.yticks(family='Times New Roman',fontsize=13)
-    plt.xticks(family='Times New Roman',fontsize=13)
-    plt.grid(True,color='grey',linewidth='1',axis='y',alpha=0.2)
-    plt.savefig('info.jpg',dpi=300)
+def plot_samping_line_chart():
+    colors = ['#377eb8','#984ea3','#ff7f00']
+    for uncertainty_level in list(range(6)):
+        plt.figure(figsize=(9,5),dpi=300)
+        for start_index,color_index in zip([0,5000,10000],[0,1,2]):
+            x = df.index[start_index:start_index+5000]
+            y = df.iloc[start_index:start_index+5000,uncertainty_level]
+            print(y)
+            plt.plot(x,y,linewidth=0.8,color=colors[color_index])
+        plt.xticks(family='Times New Roman',fontsize=17)
+        plt.yticks(family='Times New Roman',fontsize=17)
+        plt.ylim(260,274)
+        plt.grid(axis='y')
+        plt.savefig(str(uncertainty_level)+'-line-chart.jpg')
 
+def plot_samping_hist_chart():
+    colors = ['#377eb8','#984ea3','#ff7f00']
+    for uncertainty_level in list(range(6)):
+        plt.figure(figsize=(9,5),dpi=300)
+        for start_index,color_index in zip([0,5000,10000],[0,1,2]):
+            y = df.iloc[start_index:start_index+5000,uncertainty_level]
+            print(y)
+            plt.hist(y,color=colors[color_index],density=True,edgecolor='grey',bins=30)
+        plt.xticks(family='Times New Roman',fontsize=17)
+        plt.yticks(family='Times New Roman',fontsize=17)
+        plt.ylim(0,2)
+        plt.grid(axis='x')
+        plt.savefig(str(uncertainty_level)+'-hist-chart.jpg')
 
 def plot_waterfall_3D():
     fig = plt.figure(figsize=(8,8),dpi=200)
@@ -101,4 +107,5 @@ def scatter():
     plt.grid(axis='y')
     plt.savefig(r'3.jpg')
 
-plot_3()
+# plot_samping_line_chart()
+plot_samping_hist_chart()
